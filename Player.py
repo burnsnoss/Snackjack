@@ -31,6 +31,7 @@ class Player:
 
 		self.hand = []
 		self.split_hand = []
+		self.cardTotal = 0
 
 
 	def checkNewBank(self, new_bank, min_bet):
@@ -45,17 +46,49 @@ class Player:
 
 	def receiveCard(self, card):
 		self.hand.append(card)
+		self.totalHand()
 		return
+
+
+	def totalHand(self):
+		# Initialize card total to zero
+		self.cardTotal = 0
+
+		# First iterate through cards, skipping aces
+		for card in self.getHand():
+			if card.getName() == 'A':
+				continue
+			else:
+				self.cardTotal += card.getValue()
+
+		# Then iterate through cards and add in aces
+		for card in self.getHand():
+			if card.getName() == 'A' and self.cardTotal > 10:
+				self.cardTotal += card.getValue(True)
+			elif card.getName() == 'A':
+				self.cardTotal += card.getValue()
+
+		return self.cardTotal
 
 
 	def getName(self):
 		return self.name
 
 
+	def getHand(self):
+		return self.hand
+
+
+	def setHand(self, new_hand):
+		self.hand = new_hand
+		return
+
+
 	def printHand(self):
 		print ' ' + self.name + ':'
 		for card in self.hand:
 			card.printCard()
+		print '\tTotal: ' + str(self.totalHand())
 		return
 
 

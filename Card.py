@@ -24,6 +24,10 @@ class Card:
 			return 10
 
 
+	def getName(self):
+		return self.name
+		
+
 	def cardCheck(self, card):
 		card_names = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
 		if card not in card_names:

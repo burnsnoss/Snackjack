@@ -5,6 +5,7 @@ class Dealer:
 	turn = 0
 	rounds = 0
 	hand = []
+	cardTotal = 0
 
 
 	def __init__(self):
@@ -59,7 +60,7 @@ class Dealer:
 		print ' DEALER:'
 		print '\t"It is ' + player.getName() + '\'s turn!"'
 		while True:
-			user_input = raw_input('\t"Hit, stay, double, or split?" -->')
+			user_input = raw_input('\t"Hit, stay, double, or split?" --> ')
 			if self.checkUserInput(user_input, True):
 				break
 			print 'Please enter hit, stay, double, split, help, or quit.'
@@ -102,6 +103,11 @@ class Dealer:
 			player.printHand()
 
 
+	def sweepCards(self, table):
+		self.setHand([])
+		for player in table.getPlayers():
+			player.setHand([])
+		return
 
 
 	def checkUserInput(self, ui, all_opts = False):
@@ -112,18 +118,65 @@ class Dealer:
 			return ui == 'hit' or ui == 'stay' or ui == 'quit' or ui == 'help'
 
 
-	def printHand(self):
+	def setHand(self, new_hand):
+		self.hand = new_hand
+		self.totalHand()
+		return
+
+
+	def getHand(self):
+		return self.hand
+
+
+	def showCards(self):
+		print ' DEALER:'
+		print '\t"Now, I will reveal my hand."'
+		print ''
+		self.printHand(False)
+		return
+
+
+	def totalHand(self):
+		# Initialize card total to zero
+		self.cardTotal = 0
+
+		# First iterate through cards, skipping aces
+		for card in self.getHand():
+			if card.getName() == 'A':
+				continue
+			else:
+				self.cardTotal += card.getValue()
+
+		# Then iterate through cards and add in aces
+		for card in self.getHand():
+			if card.getName() == 'A' and self.cardTotal > 10:
+				self.cardTotal += card.getValue(True)
+			elif card.getName() == 'A':
+				self.cardTotal += card.getValue()
+
+		return self.cardTotal
+
+
+	def betsPlease(self, table):
+		pass
+		# for player in table.getPlayers():
+
+
+
+	def payout(self, table):
+		pass
+
+
+	def printHand(self, hidden = True):
 		print ' DEALER:'
 		first_card = True
-		for card in self.hand:
-			if first_card:
+		for card in self.getHand():
+			if first_card and hidden:
 				print '\tHIDDEN CARD'
 				first_card = False
 			else:
 				card.printCard()
+		if not hidden:
+			print '\tTotal: ' + str(self.totalHand())
 		print ''
 		return
-
-
-	def printPlayer(self):
-		pass
